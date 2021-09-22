@@ -11,7 +11,7 @@ jobs:
       model:
         type: dataset
         with:
-          ref: model
+          ref: demo-dataset
     uses: script@v1
     with:
       script: |-
@@ -28,21 +28,21 @@ jobs:
       assets:
         type: dataset
         with:
-          ref: test-assets
+          ref: demo-dataset
     outputs:
       results:
         type: dataset
         with:
-          ref: test-results
+          ref: demo-dataset
     uses: script@v1
     with:
       script: |-
         python3 demo.py --relative --adapt_scale \
           --config config/vox-256.yaml \
           --checkpoint /inputs/model/vox.pt \
-          --driving_video /inputs/assets/driving.mp4 \
-          --source_image /inputs/assets/face.png \
-          --result_video /outputs/results/adoro.mp4
+          --driving_video /app/driving.mp4 \
+          --source_image /app/source.png \
+          --result_video /app/result.mp4
       image: paperspace/first-order-model
   CreateDeployment:
     needs:
@@ -50,6 +50,7 @@ jobs:
     resources:
       instance-type: C3
     uses: script@v1
+    with:
       script: |-
         cat > ./deployment.yaml <<EOF
         image: paperspace/first-order-model:server
